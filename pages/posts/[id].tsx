@@ -3,8 +3,10 @@ import { getAllPostIds, getPostData } from '../../lib/posts'
 import Head from 'next/head'
 import Date from '../../components/date'
 import utilStyles from '../../styles/utils.module.css'
+import { NextPage } from 'next'
+import { Post } from '../../types/post'
 
-export default function Post({ postData }) {
+const Post: NextPage<{ postData: Post }> = ({ postData }) => {
   return (
     <Layout>
       <Head>
@@ -37,3 +39,5 @@ export async function getStaticProps({ params }) {
     }
   }
 }
+
+export default Post;
