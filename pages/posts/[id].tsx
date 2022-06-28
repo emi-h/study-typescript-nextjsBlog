@@ -3,10 +3,12 @@ import { getAllPostIds, getPostData } from '../../lib/posts'
 import Head from 'next/head'
 import Date from '../../components/date'
 import utilStyles from '../../styles/utils.module.css'
-import { NextPage } from 'next'
+import { GetStaticPaths, GetStaticProps, NextPage } from 'next'
 import { Post } from '../../types/post'
 
-const Post: NextPage<{ postData: Post }> = ({ postData }) => {
+type Props = { postData: Post }
+
+const Post: NextPage<Props> = ({ postData }) => {
   return (
     <Layout>
       <Head>
@@ -23,7 +25,7 @@ const Post: NextPage<{ postData: Post }> = ({ postData }) => {
   )
 }
 
-export async function getStaticPaths() {
+export const getStaticPaths: GetStaticPaths<Pick<Post, "id">> = async () => {
   const paths = getAllPostIds()
   return {
     paths,
@@ -31,7 +33,13 @@ export async function getStaticPaths() {
   }
 }
 
-export async function getStaticProps({ params }) {
+export const getStaticProps: GetStaticProps<Props, { id: string }> = async ({ params }) => {
+  if (!params) {
+    return {
+      notFound: true,
+    };
+  }
+
   const postData = await getPostData(params.id)
   return {
     props: {
